@@ -2,10 +2,12 @@ import { useState } from "react";
 import axios from "axios";
 import { Loader } from "./Loader";
 import { ResultPage } from "./ResultPage";
+import { ErrorPage } from "./ErrorPage";
 
 export const MainPage = () => {
   const [displayAdvancedMenu, setDisplayAdvancedMenu] = useState(false);
   const [screen, setScreen] = useState("form");
+  const [requestError, setRequestError] = useState(false);
   const [formData, setFormData] = useState({
     proteinSeq: "",
     jobName: "",
@@ -28,28 +30,34 @@ export const MainPage = () => {
     }
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
     setScreen("loader");
+    let jobId = "";
 
-    axios
+    await axios
       .post("http://localhost:3001/submitdata", formData)
       .then((response) => {
-        console.log(response);
-        const checkCompleteStatus = setInterval(() => {
-          axios
-            .get(
-              `http://localhost:3001/completionstatus/${response.data.jobId}`
-            )
-            .then((res) => {
-              console.log(res.data);
-              if (res.data === "Success") {
-                clearInterval(checkCompleteStatus);
-                setScreen("result");
-              }
-            });
-        }, 10000);
+        if (response.status === 200) console.log(response);
+        else setRequestError(true);
+
+        jobId = response.data.jobId;
       });
+
+    const checkCompleteStatus = setInterval(() => {
+      axios
+        .get(`http://localhost:3001/completionstatus/${jobId}`)
+        .then((res) => {
+          console.log(res);
+          if (res.data === "Success") {
+            clearInterval(checkCompleteStatus);
+            setScreen("result");
+          } else if (res.status !== 200) {
+            clearInterval(checkCompleteStatus);
+            setRequestError(true);
+          }
+        });
+    }, 10000);
   }
 
   return (
@@ -163,6 +171,8 @@ export const MainPage = () => {
         </main>
       ) : screen === "loader" ? (
         <Loader />
+      ) : requestError ? (
+        <ErrorPage />
       ) : (
         <ResultPage />
       )}

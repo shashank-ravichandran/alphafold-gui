@@ -25,7 +25,16 @@ const saveCsvFile = async (filename, seqData) => {
 };
 
 app.get("/", (req, res) => {
-  res.send("Hi I am alive");
+  try {
+    fsSync.readFile(
+      `${config.file.inputFileDir}/1jug.pdb`,
+      (_, data) => {
+        res.status(200).send(data);
+      }
+    );
+  } catch (err) {
+    res.status(500).send(err);
+  }
 });
 
 app.get("/completionstatus/:id", (req, res) => {

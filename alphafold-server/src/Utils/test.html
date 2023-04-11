@@ -1,0 +1,39 @@
+<html>
+  <head>
+    <title>Dengue Virus Methyl Transferase</title>
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+  </head>
+  <body>
+    <div id="viewer"></div>
+  </body>
+  <script type="text/javascript" src="bio-pv.min.js"></script>
+
+  <script type="text/javascript">
+    // override the default options with something less restrictive.
+    var options = {
+      width: 600,
+      height: 600,
+      antialias: true,
+      quality: "medium",
+    };
+    // insert the viewer under the Dom element with id 'gl'.
+    var viewer = pv.Viewer(document.getElementById("viewer"), options);
+  </script>
+
+  <script type="text/javascript">
+    function loadMethylTransferase() {
+      fetch("http://localhost:3001/")
+        .then((res) => res.text())
+        .then((result) => {
+          let structure = pv.io.pdb(result);
+          console.log(structure);
+          viewer.cartoon("protein", structure, { color: color.ssSuccession() });
+          viewer.centerOn(structure);
+        });
+    }
+    document.addEventListener("DOMContentLoaded", loadMethylTransferase);
+  </script>
+</html>

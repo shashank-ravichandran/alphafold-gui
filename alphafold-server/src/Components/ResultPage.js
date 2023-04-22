@@ -3,7 +3,7 @@ import pv from "bio-pv";
 export const ResultPage = () => {
   var options = {
     antialias: true,
-    quality: "medium"
+    quality: "medium",
   };
 
   function loadViewer() {
@@ -20,9 +20,9 @@ export const ResultPage = () => {
   }
 
   return (
-    <div style={{textAlign: 'center'}}>
-      <h3 onClick={() => loadViewer()}>Result will be displayed here</h3>
-      <div id="viewer" style={{border: '1px solid black'}}></div>
+    <div style={{ textAlign: "center" }}>
+      <h3 onClick={() => loadViewer()}>Result data will be displayed here</h3>
+      <div id="viewer"></div>
     </div>
   );
 };

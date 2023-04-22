@@ -4,7 +4,7 @@ export const Header = () => {
   return (
     <div>
       <Popupbar />
-      <header>
+      <header style={{padding:'20px'}}>
         <nav className="conventional-links">
           <ul>
             <li>

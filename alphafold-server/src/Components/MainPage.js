@@ -64,7 +64,10 @@ export const MainPage = () => {
     <div>
       {screen === "form" ? (
         <main>
-          <form onSubmit={(e) => handleSubmit(e)}>
+          <form
+            onSubmit={(e) => handleSubmit(e)}
+            style={{ border: "3px solid black" }}
+          >
             <label htmlFor="protein-sequence">Protein Sequence</label>
             <textarea
               id="protein-sequence"
@@ -88,83 +91,90 @@ export const MainPage = () => {
             >
               Advanced Options
             </button>
-            <br />
             {displayAdvancedMenu && (
-              <div
-                id="advanced-menu"
-                aria-labelledby="advanced-options-heading"
-              >
-                <h3 id="advanced-options-heading">Advanced Options</h3>
-                <div className="advanced-option">
-                  <label htmlFor="job-name">Job Name</label>
-                  <input
-                    type="text"
-                    id="job-name"
-                    placeholder="Enter a job name"
-                    aria-label="Job Name"
-                    value={formData.jobName}
-                    onChange={(e) =>
-                      setFormData((prevState) => ({
-                        ...prevState,
-                        jobName: e.target.value,
-                      }))
-                    }
-                  />
+              <>
+                <br />
+                <div
+                  id="advanced-menu"
+                  aria-labelledby="advanced-options-heading"
+                >
+                  <h3 id="advanced-options-heading">Advanced Options</h3>
+                  <div className="advanced-option">
+                    <label htmlFor="job-name">Job Name</label>
+                    <input
+                      type="text"
+                      id="job-name"
+                      placeholder="Enter a job name"
+                      aria-label="Job Name"
+                      value={formData.jobName}
+                      onChange={(e) =>
+                        setFormData((prevState) => ({
+                          ...prevState,
+                          jobName: e.target.value,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="advanced-option">
+                    <label htmlFor="amber-relaxation">AMBER Relaxation</label>
+                    <select
+                      id="amber-relaxation"
+                      aria-label="AMBER Relaxation"
+                      value={formData.amberRelax}
+                      onChange={(e) =>
+                        setFormData((prevState) => ({
+                          ...prevState,
+                          amberRelax: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </div>
+
+                  <div className="advanced-option">
+                    <label htmlFor="template-mode">Template Mode</label>
+                    <input
+                      type="checkbox"
+                      id="template-mode"
+                      aria-label="Template Mode"
+                      value={formData.templateMode}
+                      onClick={(e) =>
+                        setFormData((prevState) => ({
+                          ...prevState,
+                          templateMode: !formData.templateMode,
+                        }))
+                      }
+                    />
+                  </div>
+
+                  <div className="advanced-option">
+                    <label htmlFor="num-recycle">Num-Recycle</label>
+                    <select
+                      id="num-recycle"
+                      aria-label="Num-Recycle"
+                      value={formData.numRecycle}
+                      onChange={(e) =>
+                        setFormData((prevState) => ({
+                          ...prevState,
+                          numRecycle: e.target.value,
+                        }))
+                      }
+                    >
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
                 </div>
-                <div className="advanced-option">
-                  <label htmlFor="amber-relaxation">AMBER Relaxation</label>
-                  <select
-                    id="amber-relaxation"
-                    aria-label="AMBER Relaxation"
-                    value={formData.amberRelax}
-                    onChange={(e) =>
-                      setFormData((prevState) => ({
-                        ...prevState,
-                        amberRelax: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="yes">Yes</option>
-                    <option value="no">No</option>
-                  </select>
-                </div>
-                <div className="advanced-option">
-                  <label htmlFor="template-mode">Template Mode</label>
-                  <input
-                    type="checkbox"
-                    id="template-mode"
-                    aria-label="Template Mode"
-                    value={formData.templateMode}
-                    onClick={(e) =>
-                      setFormData((prevState) => ({
-                        ...prevState,
-                        templateMode: !formData.templateMode,
-                      }))
-                    }
-                  />
-                </div>
-                <div className="advanced-option">
-                  <label htmlFor="num-recycle">Num-Recycle</label>
-                  <select
-                    id="num-recycle"
-                    aria-label="Num-Recycle"
-                    value={formData.numRecycle}
-                    onChange={(e) =>
-                      setFormData((prevState) => ({
-                        ...prevState,
-                        numRecycle: e.target.value,
-                      }))
-                    }
-                  >
-                    <option value="1">1</option>
-                    <option value="2">2</option>
-                    <option value="3">3</option>
-                  </select>
-                </div>
-              </div>
+              </>
             )}
+
             <br />
-            <button type="submit" aria-label="Submit">
+
+            <button type="submit" aria-label="Submit" style={{borderRadius: '5px'}}>
               Submit
             </button>
           </form>

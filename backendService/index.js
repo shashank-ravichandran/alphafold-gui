@@ -26,12 +26,9 @@ const saveCsvFile = async (filename, seqData) => {
 
 app.get("/", (req, res) => {
   try {
-    fsSync.readFile(
-      `${config.file.inputFileDir}/1jug.pdb`,
-      (_, data) => {
-        res.status(200).send(data);
-      }
-    );
+    fsSync.readFile(`${config.file.inputFileDir}/1jug.pdb`, (_, data) => {
+      res.status(200).send(data);
+    });
   } catch (err) {
     res.status(500).send(err);
   }
@@ -53,6 +50,46 @@ app.get("/completionstatus/:id", (req, res) => {
 app.post("/submitdata", async (req, res) => {
   try {
     let seqData = req.body.proteinSeq;
+    const fileName = Array(5)
+      .fill(0)
+      .map((x) => Math.random().toString(36).charAt(2))
+      .join("");
+
+    let options = {
+      amber: req.body.amberRelax,
+      template: req.body.templateMode,
+      recycle: req.body.numRecycle,
+    };
+    console.log("Options ---> ", options);
+
+    saveCsvFile(fileName, seqData).then(() =>
+      res.status(200).send({
+        jobId: fileName,
+        message: "Submitted successfully. Job ID: " + fileName,
+      })
+    );
+
+    setTimeout(() => {
+      fs.writeFile(
+        `${config.file.inputFileDir}/${fileName}/status.txt`,
+        "Success"
+      );
+    }, 12000);
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
+
+app.get("/generate", async (req, res) => {
+  try {
+    let seqData = req.query.sequence;
+    let options = {
+      amber: req.query.AMBER,
+      template: req.query.Templatemode,
+      recycle: req.query.Recycle,
+    };
+    console.log("Options ---> ", options);
+
     const fileName = Array(5)
       .fill(0)
       .map((x) => Math.random().toString(36).charAt(2))

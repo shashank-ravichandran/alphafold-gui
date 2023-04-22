@@ -1,4 +1,5 @@
 import pv from "bio-pv";
+import { useEffect } from "react";
 
 export const ResultPage = () => {
   var options = {
@@ -7,17 +8,22 @@ export const ResultPage = () => {
   };
 
   function loadViewer() {
-    var viewer = pv.Viewer(document.getElementById("viewer"), options);
-    fetch("http://localhost:3001/")
-      .then((res) => res.text())
-      .then((result) => {
-        let structure = pv.io.pdb(result);
-        viewer.cartoon("protein", structure, {
-          color: pv.color.ssSuccession(),
+    var isEmpty = document.getElementById("viewer").innerHTML === "";
+    if (isEmpty) {
+      var viewer = pv.Viewer(document.getElementById("viewer"), options);
+      fetch("http://localhost:3001/")
+        .then((res) => res.text())
+        .then((result) => {
+          let structure = pv.io.pdb(result);
+          viewer.cartoon("protein", structure, {
+            color: pv.color.ssSuccession(),
+          });
+          viewer.centerOn(structure);
         });
-        viewer.centerOn(structure);
-      });
+    }
   }
+
+  useEffect(() => loadViewer(), []);
 
   return (
     <div style={{ textAlign: "center" }}>

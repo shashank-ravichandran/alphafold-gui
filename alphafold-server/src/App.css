@@ -26,6 +26,7 @@
   transition: 0.3s ease;
   background-color: white;
   border-radius: 20px;
+  border: "1px solid #444444";
   text-align: center;
   font-size: 17px;
   position: relative;
@@ -34,5 +35,5 @@
 
 .popup-links a {
   text-decoration: none;
-  color: slategray;
+  color: #444444;
 }

@@ -11,7 +11,7 @@ export const ResultPage = () => {
     var isEmpty = document.getElementById("viewer").innerHTML === "";
     if (isEmpty) {
       var viewer = pv.Viewer(document.getElementById("viewer"), options);
-      fetch("http://localhost:3001/")
+      fetch("http://34.152.59.173/")
         .then((res) => res.text())
         .then((result) => {
           let structure = pv.io.pdb(result);

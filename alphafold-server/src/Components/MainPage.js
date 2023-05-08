@@ -36,7 +36,7 @@ export const MainPage = () => {
     let jobId = "";
 
     await axios
-      .post("http://localhost:3001/submitdata", formData)
+      .post("http://34.152.59.173/submitdata", formData)
       .then((response) => {
         if (response.status === 200) console.log(response);
         else setRequestError(true);
@@ -46,7 +46,7 @@ export const MainPage = () => {
 
     const checkCompleteStatus = setInterval(() => {
       axios
-        .get(`http://localhost:3001/completionstatus/${jobId}`)
+        .get(`http://34.152.59.173/completionstatus/${jobId}`)
         .then((res) => {
           console.log(res);
           if (res.data === "Success") {

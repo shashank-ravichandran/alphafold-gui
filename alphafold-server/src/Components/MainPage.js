@@ -13,7 +13,7 @@ export const MainPage = () => {
     jobName: "",
     amberRelax: "Yes",
     templateMode: false,
-    numRecycle: 1,
+    numRecycle: 3,
   });
 
   function toggleAdvancedMenu() {

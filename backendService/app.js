@@ -64,7 +64,7 @@ app.post("/submitdata", async (req, res) => {
 
     let alphafoldOptions = ` -r ${options.recycle} `;
 
-    if (options.amber === "yes") {
+    if (options.amber === "Yes") {
       alphafoldOptions += " -a ";
     }
 

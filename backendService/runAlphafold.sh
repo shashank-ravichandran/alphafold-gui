@@ -18,4 +18,4 @@ while getopts 'atr:f:' OPTION; do
     esac
 done
 
-echo $alphafoldCmd
+$alphafoldCmd

@@ -90,7 +90,16 @@ app.post("/submitdata", async (req, res) => {
       );
     }, 12000);
 
-    exec(`cp ./runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`);
+    exec(
+      `cp ./runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
+      (error, stdout, stderr) => {
+        if (error) console.log(error);
+        if (stderr) console.log(stderr);
+
+        console.log(stdout);
+      }
+    );
+
     exec(
       `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
       (error, stdout, stderr) => {

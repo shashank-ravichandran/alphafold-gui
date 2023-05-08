@@ -91,7 +91,7 @@ app.post("/submitdata", async (req, res) => {
     }, 12000);
 
     exec(
-      `echo "cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/"`,
+      `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
         if (error) console.log(error);
         if (stderr) console.log(stderr);  

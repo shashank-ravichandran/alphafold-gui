@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { exec } = require("child_process");
 const bodyParser = require("body-parser");
 const config = require("config");
 const fsSync = require("fs");
@@ -60,7 +61,19 @@ app.post("/submitdata", async (req, res) => {
       template: req.body.templateMode,
       recycle: req.body.numRecycle,
     };
-    console.log("Options ---> ", options);
+
+    let alphafoldOptions = ` -r ${options.recycle} `;
+
+    if (options.amber === "yes") {
+      alphafoldOptions += " -a ";
+    }
+
+    if (options.template === true) {
+      alphafoldOptions += " -t ";
+    }
+
+    alphafoldOptions = alphafoldOptions + ` -f ${fileName}`;
+    console.log("Options ---> ", alphafoldOptions);
 
     saveCsvFile(fileName, seqData).then(() =>
       res.status(200).send({
@@ -75,6 +88,26 @@ app.post("/submitdata", async (req, res) => {
         "Success"
       );
     }, 12000);
+
+    exec(
+      `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
+      (error, stdout, stderr) => {
+        if (error) console.log(error);
+        if (stderr) console.log(stderr);  
+
+        console.log(stdout);
+      }
+    );
+
+    exec(
+      `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
+      (error, stdout, stderr) => {
+        if (error) console.log(error);
+        if (stderr) console.log(stderr);
+
+        console.log(stdout);
+      }
+    );
   } catch (err) {
     res.status(500).send(err);
   }

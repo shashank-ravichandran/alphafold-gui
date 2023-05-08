@@ -1,5 +1,5 @@
 #!/bin/bash
-alphafoldCmd="nohup colabfold_batch"
+alphafoldCmd="colabfold_batch"
 
 while getopts 'atr:f:' OPTION; do
     case "$OPTION" in
@@ -13,9 +13,9 @@ while getopts 'atr:f:' OPTION; do
         alphafoldCmd="$alphafoldCmd --num-recycle $OPTARG"
         ;;
     f)
-        alphafoldCmd="$alphafoldCmd --use-gpu-relax $OPTARG.csv $OPTARG &"
+        alphafoldCmd="$alphafoldCmd --use-gpu-relax $OPTARG.csv $OPTARG"
     ;;
     esac
 done
 
-$alphafoldCmd
+nohup $alphafoldCmd &

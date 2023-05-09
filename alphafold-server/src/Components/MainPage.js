@@ -34,13 +34,14 @@ export const MainPage = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     setScreen("loader");
-
+    let jobid_var = "";
     await axios
       .post("http://34.152.59.173/submitdata", formData)
       .then((response) => {
         if (response.status === 200){
           console.log(response);
-          setJobId(response.data.jobId);
+          jobid_var = response.data.jobId; 
+          setJobId(jobid_var);
         } 
         else {
           setRequestError(true);
@@ -50,7 +51,7 @@ export const MainPage = () => {
 
     const checkCompleteStatus = setInterval(() => {
       axios
-        .get(`http://34.152.59.173/completionstatus/${jobId}`)
+        .get(`http://34.152.59.173/completionstatus/${jobid_var}`)
         .then((res) => {
           console.log(res);
           if (res.data === "Success") {

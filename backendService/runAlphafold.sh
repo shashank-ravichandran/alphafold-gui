@@ -1,5 +1,6 @@
 #!/bin/bash
 alphafoldCmd="colabfold_batch"
+working_dir=""
 
 while getopts 'atr:f:' OPTION; do
     case "$OPTION" in
@@ -13,9 +14,11 @@ while getopts 'atr:f:' OPTION; do
         alphafoldCmd="$alphafoldCmd --num-recycle $OPTARG"
         ;;
     f)
-        alphafoldCmd="$alphafoldCmd --use-gpu-relax $OPTARG.csv $OPTARG"
+        working_dir="/home/ragothaman/alphafold-gui/backendService/inputFiles/$OPTARG"
+        alphafoldCmd="$alphafoldCmd --use-gpu-relax $working_dir/$OPTARG.csv $working_dir"
     ;;
     esac
 done
 
-nohup $alphafoldCmd &
+$alphafoldCmd
+echo "Success" > $working_dir/status.txt

@@ -8,6 +8,7 @@ export const MainPage = () => {
   const [displayAdvancedMenu, setDisplayAdvancedMenu] = useState(false);
   const [screen, setScreen] = useState("form");
   const [requestError, setRequestError] = useState(false);
+  const [jobId, setJobId] = useState("");
   const [formData, setFormData] = useState({
     proteinSeq: "",
     jobName: "",
@@ -33,15 +34,18 @@ export const MainPage = () => {
   async function handleSubmit(e) {
     e.preventDefault();
     setScreen("loader");
-    let jobId = "";
 
     await axios
       .post("http://34.152.59.173/submitdata", formData)
       .then((response) => {
-        if (response.status === 200) console.log(response);
-        else setRequestError(true);
-
-        jobId = response.data.jobId;
+        if (response.status === 200){
+          console.log(response);
+          setJobId(response.data.jobId);
+        } 
+        else {
+          setRequestError(true);
+          setScreen("result");
+        }
       });
 
     const checkCompleteStatus = setInterval(() => {
@@ -51,13 +55,15 @@ export const MainPage = () => {
           console.log(res);
           if (res.data === "Success") {
             clearInterval(checkCompleteStatus);
+            setRequestError(false);
             setScreen("result");
-          } else if (res.status !== 200) {
+          } else if (res.status !== 200 || res.data === "Error") {
             clearInterval(checkCompleteStatus);
             setRequestError(true);
+            setScreen("result");
           }
         });
-    }, 10000);
+    }, 15000);
   }
 
   return (
@@ -174,7 +180,11 @@ export const MainPage = () => {
 
             <br />
 
-            <button type="submit" aria-label="Submit" style={{borderRadius: '5px'}}>
+            <button
+              type="submit"
+              aria-label="Submit"
+              style={{ borderRadius: "5px" }}
+            >
               Submit
             </button>
           </form>
@@ -184,7 +194,7 @@ export const MainPage = () => {
       ) : requestError ? (
         <ErrorPage />
       ) : (
-        <ResultPage />
+        <ResultPage jobId={jobId}/>
       )}
     </div>
   );

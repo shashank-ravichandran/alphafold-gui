@@ -81,7 +81,7 @@ app.post("/submitdata", async (req, res) => {
 
     let alphafoldOptions = ` -r ${options.recycle} `;
 
-    if (options.amber === "yes") {
+    if (options.amber === "Yes") {
       alphafoldOptions += " -a ";
     }
 
@@ -107,23 +107,30 @@ app.post("/submitdata", async (req, res) => {
       `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
         if (error || stderr) {
-          console.log(`Error --> ${error}`, ` Stderr --> ${stderr}`);
+          console.log(`Error while copying --> ${error}`, ` Stderr --> ${stderr}`);
           fs.writeFile(
             `${config.file.inputFileDir}/${fileName}/status.txt`,
             "Error"
           );
         } else {
           console.log(stdout);
+          console.log(
+            "Copied script file running AF2 now",
+            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`
+          );
           exec(
             `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
             (error, stdout, stderr) => {
               if (error || stderr) {
-                console.log(`Error --> ${error}`, ` Stderr --> ${stderr}`);
+                console.log(`Error in AF2 --> ${error}`, ` Stderr --> ${stderr}`);
                 fs.writeFile(
                   `${config.file.inputFileDir}/${fileName}/status.txt`,
                   "Error"
                 );
-              } else console.log(stdout);
+              } else {
+                console.log(stdout);
+                console.log("AF2 complete");
+              }
             }
           );
         }
@@ -167,7 +174,7 @@ app.post("/submitdata", async (req, res) => {
 //   }
 // });
 
-app.listen(process.env.PORT||config.app.port, (err) => {
+app.listen(process.env.PORT || config.app.port, (err) => {
   if (err) console.log("Encountered an error", err);
   else console.log("Listening on port " + config.app.port);
 });

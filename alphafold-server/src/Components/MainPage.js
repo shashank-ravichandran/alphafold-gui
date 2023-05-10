@@ -38,12 +38,11 @@ export const MainPage = () => {
     await axios
       .post("http://34.152.59.173/submitdata", formData)
       .then((response) => {
-        if (response.status === 200){
+        if (response.status === 200) {
           console.log(response);
-          jobid_var = response.data.jobId; 
+          jobid_var = response.data.jobId;
           setJobId(jobid_var);
-        } 
-        else {
+        } else {
           setRequestError(true);
           setScreen("result");
         }
@@ -195,7 +194,7 @@ export const MainPage = () => {
       ) : requestError ? (
         <ErrorPage />
       ) : (
-        <ResultPage jobId={jobId}/>
+        <ResultPage jobId={jobId} />
       )}
     </div>
   );

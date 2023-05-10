@@ -106,7 +106,7 @@ app.post("/submitdata", async (req, res) => {
     exec(
       `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
-        if (error != "") {
+        if (error) {
           console.log(`Error while copying --> ${error}`, ` Stderr --> ${stderr}`);
           fs.writeFile(
             `${config.file.inputFileDir}/${fileName}/status.txt`,
@@ -121,7 +121,7 @@ app.post("/submitdata", async (req, res) => {
           exec(
             `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
             (error, stdout, stderr) => {
-              if (error != "") {
+              if (error) {
                 console.log(`Error in AF2 --> ${error}`, ` Stderr --> ${stderr}`);
                 fs.writeFile(
                   `${config.file.inputFileDir}/${fileName}/status.txt`,

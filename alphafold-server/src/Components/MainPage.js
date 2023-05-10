@@ -13,7 +13,7 @@ export const MainPage = () => {
     proteinSeq: "",
     jobName: "",
     amberRelax: "Yes",
-    templateMode: false,
+    templateMode: true,
     numRecycle: 3,
   });
 

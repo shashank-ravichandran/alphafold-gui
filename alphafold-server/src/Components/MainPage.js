@@ -53,11 +53,11 @@ export const MainPage = () => {
         .get(`http://34.152.59.173/completionstatus/${jobid_var}`)
         .then((res) => {
           console.log(res);
-          if (res.data === "Success") {
+          if (res.data.trim() === "Success") {
             clearInterval(checkCompleteStatus);
             setRequestError(false);
             setScreen("result");
-          } else if (res.status !== 200 || res.data === "Error") {
+          } else if (res.status !== 200 || res.data.trim() === "Error") {
             clearInterval(checkCompleteStatus);
             setRequestError(true);
             setScreen("result");

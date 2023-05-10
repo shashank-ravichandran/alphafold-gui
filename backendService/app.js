@@ -32,10 +32,14 @@ app.get("/", (req, res) => {
 
 app.get("/fetchPDB/:id", (req, res) => {
   try {
+    console.log(
+      `${config.file.inputFileDir}/${req.params.id}/${req.params.id}_relaxed_rank_001_alphafold2_*.pdb`
+    );
     glob(
       `${config.file.inputFileDir}/${req.params.id}/${req.params.id}_relaxed_rank_001_alphafold2_*.pdb`,
       (err, files) => {
         if (err) {
+          console.log("Error in glob ", err);
           return res.status(500).send(err);
         }
 
@@ -47,6 +51,7 @@ app.get("/fetchPDB/:id", (req, res) => {
       }
     );
   } catch (err) {
+    console.log("Error din FetchPDB", err);
     res.status(500).send(err);
   }
 });
@@ -107,7 +112,10 @@ app.post("/submitdata", async (req, res) => {
       `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
         if (error) {
-          console.log(`Error while copying --> ${error}`, ` Stderr --> ${stderr}`);
+          console.log(
+            `Error while copying --> ${error}`,
+            ` Stderr --> ${stderr}`
+          );
           fs.writeFile(
             `${config.file.inputFileDir}/${fileName}/status.txt`,
             "Error"
@@ -122,7 +130,10 @@ app.post("/submitdata", async (req, res) => {
             `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
             (error, stdout, stderr) => {
               if (error) {
-                console.log(`Error in AF2 --> ${error}`, ` Stderr --> ${stderr}`);
+                console.log(
+                  `Error in AF2 --> ${error}`,
+                  ` Stderr --> ${stderr}`
+                );
                 fs.writeFile(
                   `${config.file.inputFileDir}/${fileName}/status.txt`,
                   "Error"

@@ -5,7 +5,7 @@ const bodyParser = require("body-parser");
 const config = require("config");
 const fsSync = require("fs");
 const fs = require("fs").promises;
-const glob = requie("glob");
+const glob = require("glob");
 
 const app = express();
 app.use(cors());

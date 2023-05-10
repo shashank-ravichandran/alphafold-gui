@@ -30,7 +30,7 @@ app.get("/", (req, res) => {
   res.send("I am alive");
 });
 
-app.get("fetchPDB/:id", (req, res) => {
+app.get("/fetchPDB/:id", (req, res) => {
   try {
     glob(
       `${config.file.inputFileDir}/${req.params.id}/${req.params.id}_relaxed_rank_001_alphafold2_*.pdb`,

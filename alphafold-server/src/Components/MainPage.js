@@ -146,8 +146,8 @@ export const MainPage = () => {
                       type="checkbox"
                       id="template-mode"
                       aria-label="Template Mode"
-                      value={formData.templateMode}
-                      onClick={(e) =>
+                      checked={formData.templateMode}
+                      onChange={(e) =>
                         setFormData((prevState) => ({
                           ...prevState,
                           templateMode: !formData.templateMode,

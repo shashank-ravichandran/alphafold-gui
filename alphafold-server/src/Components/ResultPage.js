@@ -14,6 +14,7 @@ export const ResultPage = (props) => {
       fetch(`http://34.152.59.173/fetchPDB/${jobId}`)
         .then((res) => res.text())
         .then((result) => {
+          console.log("result", result);
           let structure = pv.io.pdb(result);
           viewer.cartoon("protein", structure, {
             color: pv.color.ssSuccession(),

@@ -33,25 +33,17 @@ app.get("/", (req, res) => {
 app.get("/fetchPDB/:id", (req, res) => {
   try {
     console.log(
-      `${config.file.inputFileDir}/${req.params.id}/${req.params.id}_relaxed_rank_001_alphafold2_*.pdb`
+      `${config.file.inputFileDir}/${req.params.id}/final_structure.pdb`
     );
-    glob(
-      `${config.file.inputFileDir}/${req.params.id}/${req.params.id}_relaxed_rank_001_alphafold2_*.pdb`,
-      (err, files) => {
-        if (err) {
-          console.log("Error in glob ", err);
-          return res.status(500).send(err);
-        }
 
-        console.log("matched files -->", files);
-
-        fsSync.readFile(`${files[0]}`, (_, data) => {
-          res.status(200).send(data);
-        });
+    fsSync.readFile(
+      `${config.file.inputFileDir}/${req.params.id}/final_structure.pdb`,
+      (_, data) => {
+        res.status(200).send(data);
       }
     );
   } catch (err) {
-    console.log("Error din FetchPDB", err);
+    console.log("Error in FetchPDB", err);
     res.status(500).send(err);
   }
 });

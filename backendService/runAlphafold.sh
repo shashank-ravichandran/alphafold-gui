@@ -22,3 +22,4 @@ done
 
 $alphafoldCmd
 echo "Success" > $working_dir/status.txt
+cp $working_dir/*_relaxed_rank_001_alphafold2_ptm_model_* $working_dir/final_structure.pdb

@@ -11,6 +11,7 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+//Function to save the submitted sequence in the AF2 input format
 const saveCsvFile = async (filename, seqData) => {
   const header = "id,sequence\n";
   const dir = `${config.file.inputFileDir}/${filename}`;
@@ -26,10 +27,14 @@ const saveCsvFile = async (filename, seqData) => {
   }
 };
 
+//Desc: Endpoint to check if the backend is alive
 app.get("/", (req, res) => {
   res.send("I am alive");
 });
 
+//Desc: Endpoint that returns the rank 1 AF2 model
+//params: JobId in the URL (:id)
+//Response: PDB file contents as text
 app.get("/fetchPDB/:id", (req, res) => {
   try {
     console.log(
@@ -48,6 +53,9 @@ app.get("/fetchPDB/:id", (req, res) => {
   }
 });
 
+//Desc: Endpoint that checks status of AF2 for a submitted sequence
+//params: JobId in the URL (:id)
+//Response: Contents of the status.txt file as JSON object
 app.get("/completionstatus/:id", (req, res) => {
   try {
     fsSync.readFile(
@@ -61,6 +69,9 @@ app.get("/completionstatus/:id", (req, res) => {
   }
 });
 
+//Desc: Endpoint that receives the formdata and submits the dequence to AF2
+//Body: Sequence, additional options(Amber relaxation, template mode, no recycles --> optional)
+//Response: JobIdvas JSON object
 app.post("/submitdata", async (req, res) => {
   try {
     let seqData = req.body.proteinSeq;
@@ -143,6 +154,10 @@ app.post("/submitdata", async (req, res) => {
   }
 });
 
+//Desc: Endpoint that receives data through the URL
+`params: sequence (peptide seq), AMBER (amber relaxation[yes/no]), 
+         Templatemode (use template mode [yes/no]), Recycle (Number recycles [1,2,3])`
+//Response: Rank 1 AF2 model file contents as text
 app.get("/generate", async (req, res) => {
   try {
     let seqData = req.query.sequence;
@@ -229,6 +244,7 @@ app.get("/generate", async (req, res) => {
   }
 });
 
+//App listens to port 8080 by default 
 app.listen(process.env.PORT || config.app.port, (err) => {
   if (err) console.log("Encountered an error", err);
   else console.log("Listening on port " + config.app.port);

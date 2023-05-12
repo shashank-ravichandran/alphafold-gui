@@ -143,38 +143,91 @@ app.post("/submitdata", async (req, res) => {
   }
 });
 
-// app.get("/generate", async (req, res) => {
-//   try {
-//     let seqData = req.query.sequence;
-//     let options = {
-//       amber: req.query.AMBER,
-//       template: req.query.Templatemode,
-//       recycle: req.query.Recycle,
-//     };
-//     console.log("Options ---> ", options);
+app.get("/generate", async (req, res) => {
+  try {
+    let seqData = req.query.sequence;
+    let options = {
+      amber: req.query.AMBER,
+      template: req.query.Templatemode,
+      recycle: req.query.Recycle,
+    };
 
-//     const fileName = Array(5)
-//       .fill(0)
-//       .map((x) => Math.random().toString(36).charAt(2))
-//       .join("");
+    const fileName = Array(5)
+      .fill(0)
+      .map((x) => Math.random().toString(36).charAt(2))
+      .join("");
 
-//     saveCsvFile(fileName, seqData).then(() =>
-//       res.status(200).send({
-//         jobId: fileName,
-//         message: "Submitted successfully. Job ID: " + fileName,
-//       })
-//     );
+    let alphafoldOptions = ` -r ${options.recycle} `;
 
-//     setTimeout(() => {
-//       fs.writeFile(
-//         `${config.file.inputFileDir}/${fileName}/status.txt`,
-//         "Success"
-//       );
-//     }, 12000);
-//   } catch (err) {
-//     res.status(500).send(err);
-//   }
-// });
+    if (options.amber === "yes") {
+      alphafoldOptions += " -a ";
+    }
+
+    if (options.template === true) {
+      alphafoldOptions += " -t ";
+    }
+
+    alphafoldOptions = alphafoldOptions + ` -f ${fileName}`;
+    console.log("Options ---> ", alphafoldOptions);
+
+    try {
+      saveCsvFile(fileName, seqData).then(() =>
+        console.log({
+          jobId: fileName,
+          message: "Submitted successfully. Job ID: " + fileName,
+        })
+      );
+    } catch (err) {
+      res.status(500).send(err);
+    }
+
+    exec(
+      `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(`Error in AF2 --> ${error}`, ` Stderr --> ${stderr}`);
+          res.status(500).send(`Error in AF2 --> ${error}
+           Stderr --> ${stderr}`);
+        } else {
+          console.log(stdout);
+          console.log(
+            "Copied script file running AF2 now",
+            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`
+          );
+          exec(
+            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
+            (error, stdout, stderr) => {
+              if (error) {
+                console.log(
+                  `Error in AF2 --> ${error}`,
+                  ` Stderr --> ${stderr}`
+                );
+                res
+                  .status(500)
+                  .send(`Error in AF2 --> ${error} Stderr --> ${stderr}`);
+              } else {
+                console.log(stdout);
+                try {
+                  fsSync.readFile(
+                    `${config.file.inputFileDir}/${fileName}/final_structure.pdb`,
+                    (_, data) => {
+                      res.status(200).send(data);
+                    }
+                  );
+                } catch (err) {
+                  console.log("Error in FetchPDB", err);
+                  res.status(500).send(err);
+                }
+              }
+            }
+          );
+        }
+      }
+    );
+  } catch (err) {
+    res.status(500).send(err);
+  }
+});
 
 app.listen(process.env.PORT || config.app.port, (err) => {
   if (err) console.log("Encountered an error", err);

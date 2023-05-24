@@ -7,6 +7,7 @@ import { ErrorPage } from "./ErrorPage";
 export const MainPage = () => {
   const [displayAdvancedMenu, setDisplayAdvancedMenu] = useState(false);
   const [screen, setScreen] = useState("form");
+  const [isBtnDisabled, setIsBtnDisabled] = useState(false);
   const [requestError, setRequestError] = useState(false);
   const [jobId, setJobId] = useState("");
   const [formData, setFormData] = useState({
@@ -81,16 +82,26 @@ export const MainPage = () => {
               placeholder="Enter your protein sequence here..."
               aria-required="true"
               value={formData.proteinSeq}
-              onChange={(e) =>
+              onChange={(e) => {
                 setFormData((prevState) => ({
                   ...prevState,
-                  proteinSeq: e.target.value,
-                }))
-              }
+                  proteinSeq: e.target.value.toUpperCase(),
+                }));
+
+                if (
+                  /.*[^ARNDBCEQZGHILKMFPSTWYV].*/.test(
+                    e.target.value.toUpperCase()
+                  )
+                )
+                  setIsBtnDisabled(true);
+                else setIsBtnDisabled(false);
+              }}
               required
             />
+            <br />
             <button
               type="button"
+              className="customBtn"
               onClick={() => toggleAdvancedMenu()}
               aria-haspopup="true"
               aria-expanded="false"
@@ -182,8 +193,9 @@ export const MainPage = () => {
 
             <button
               type="submit"
+              className={!isBtnDisabled ? "customBtn" : "disabledBtn"}
               aria-label="Submit"
-              style={{ borderRadius: "5px" }}
+              disabled={isBtnDisabled}
             >
               Submit
             </button>

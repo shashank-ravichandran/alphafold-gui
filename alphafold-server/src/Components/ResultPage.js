@@ -31,6 +31,14 @@ export const ResultPage = (props) => {
     <div style={{ textAlign: "center" }}>
       <h3>Result data will be displayed here</h3>
       <div id="viewer"></div>
+      <br />
+      <button
+        className="customBtn"
+        aria-label="Submit"
+        style={{ borderRadius: "5px" }}
+      >
+        Submit another sequence
+      </button>
     </div>
   );
 };

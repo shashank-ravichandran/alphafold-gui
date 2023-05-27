@@ -37,3 +37,14 @@
   text-decoration: none;
   color: #444444;
 }
+
+.errorPopup {
+  background-color: white;
+  color: rgb(212, 2, 2);
+  width:30vw;
+  border: 2px solid black;
+  border-radius: 5px;
+  padding: 10px;
+  text-align: center;
+  margin: auto;
+}

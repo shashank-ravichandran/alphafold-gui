@@ -83,6 +83,12 @@ export const MainPage = () => {
     <div>
       {screen === "form" ? (
         <main>
+          {isBtnDisabled ? (
+            <div className="errorPopup">
+              <span>The sequence contains Non - Amino Acid characters</span>
+            </div>
+          ) : null}
+
           <form
             onSubmit={(e) => handleSubmit(e)}
             style={{ border: "3px solid black" }}

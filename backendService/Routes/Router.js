@@ -17,6 +17,9 @@ router.get("/", (req, res) => {
 //Endpoint that returns the rank 1 AF2 model
 router.get("/fetchPDB/:id", jobSubmissionMethods.fetchPdb);
 
+//Endpoint that returns the result directory as a ZIP file
+router.get("/fetchAsZip/:id", jobSubmissionMethods.fetchAsZip);
+
 //Endpoint that checks status of AF2 for a submitted sequence
 router.get("/completionstatus/:id", jobSubmissionMethods.completionStatus);
 

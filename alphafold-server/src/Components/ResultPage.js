@@ -34,11 +34,19 @@ export const ResultPage = (props) => {
       <br />
       <button
         className="customBtn"
-        aria-label="Submit"
+        aria-label="Submit another sequence"
         style={{ borderRadius: "5px" }}
         onClick={() => props.resetAll()}
       >
         Submit another sequence
+      </button>
+      <button
+        className="customBtn"
+        aria-label="Download results"
+        style={{ borderRadius: "5px" }}
+        onClick={() => props.resetAll()}
+      >
+        <a href={`http://34.152.59.173/submitdata/${props.jobId}`}>Download results</a>
       </button>
     </div>
   );

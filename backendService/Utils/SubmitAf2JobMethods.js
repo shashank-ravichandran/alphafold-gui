@@ -47,6 +47,11 @@ const jobSubmissionMethods = {
       throw err;
     }
   },
+
+  fetchAsZip: function (req, res) {
+    let zipFile = `${config.file.inputFileDir}/${req.params.id}/result_files_compressed.zip.pdb`;
+    res.download(zipFile);
+  },
 };
 
 module.exports = { jobSubmissionMethods };

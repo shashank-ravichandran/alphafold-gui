@@ -36,6 +36,7 @@ export const ResultPage = (props) => {
         className="customBtn"
         aria-label="Submit"
         style={{ borderRadius: "5px" }}
+        onClick={() => props.resetAll()}
       >
         Submit another sequence
       </button>

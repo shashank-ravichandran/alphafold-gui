@@ -18,6 +18,18 @@ export const MainPage = () => {
     numRecycle: 3,
   });
 
+  function resetAll() {
+    setJobId("");
+    setFormData({
+      proteinSeq: "",
+      jobName: "",
+      amberRelax: "Yes",
+      templateMode: true,
+      numRecycle: 3,
+    });
+    setScreen("form");
+  }
+
   function toggleAdvancedMenu() {
     const advancedMenuButton = document.querySelector(
       'button[aria-haspopup="true"]'
@@ -206,7 +218,7 @@ export const MainPage = () => {
       ) : requestError ? (
         <ErrorPage />
       ) : (
-        <ResultPage jobId={jobId} />
+        <ResultPage resetAll={resetAll} jobId={jobId} />
       )}
     </div>
   );

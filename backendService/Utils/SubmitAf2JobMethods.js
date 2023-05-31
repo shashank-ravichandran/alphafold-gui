@@ -49,7 +49,7 @@ const jobSubmissionMethods = {
   },
 
   fetchAsZip: function (req, res) {
-    let zipFile = `${config.file.inputFileDir}/${req.params.id}/result_files_compressed.zip.pdb`;
+    let zipFile = `${config.file.inputFileDir}/${req.params.id}/result_files_compressed.zip`;
     res.download(zipFile);
   },
 };

@@ -46,7 +46,7 @@ export const ResultPage = (props) => {
         style={{ borderRadius: "5px" }}
         onClick={() => props.resetAll()}
       >
-        <a href={`http://34.152.59.173/submitdata/${props.jobId}`} target="_blank">Download results</a>
+        <a href={`http://34.152.59.173/fetchAsZip/${props.jobId}`} target="_blank">Download results</a>
       </button>
     </div>
   );

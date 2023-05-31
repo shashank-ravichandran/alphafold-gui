@@ -23,4 +23,4 @@ done
 $alphafoldCmd
 echo "Success" > $working_dir/status.txt
 cp $working_dir/*_relaxed_rank_001_alphafold2_ptm_model_* $working_dir/final_structure.pdb
-zip $working_dir/result_files_compressed.zip $working_dir/*
+cd $working_dir && zip -r ./result_files_compressed.zip ./*

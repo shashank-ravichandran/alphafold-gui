@@ -38,13 +38,22 @@ const jobSubmissionMethods = {
     const dir = `${config.file.inputFileDir}/${filename}`;
 
     try {
-      if (!fsSync.existsSync(dir)) fs.mkdir(dir);
+      if (!fsSync.existsSync(dir)) {
+        console.log("Inside file creation if");
+        fs.mkdir(dir);
+      }
+
+      else {
+        console.log("Inside file creation else");
+      }
 
       await fs
         .writeFile(`${dir}/${filename}.csv`, header + filename + "," + seqData)
         .then(fs.writeFile(`${dir}/status.txt`, ""));
     } catch (err) {
       throw err;
+    } finally {
+      fsSync.close();
     }
   },
 

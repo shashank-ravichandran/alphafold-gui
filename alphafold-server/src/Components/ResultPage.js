@@ -40,7 +40,7 @@ export const ResultPage = (props) => {
       >
         Submit another sequence
       </button>
-{{"     "}}
+
       <button
         className="customBtn"
         aria-label="Download results"

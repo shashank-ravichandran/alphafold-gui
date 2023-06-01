@@ -40,13 +40,14 @@ export const ResultPage = (props) => {
       >
         Submit another sequence
       </button>
+{{"     "}}
       <button
         className="customBtn"
         aria-label="Download results"
         style={{ borderRadius: "5px" }}
-        onClick={() => props.resetAll()}
-      >
-        <a href={`http://34.152.59.173/fetchAsZip/${props.jobId}`} target="_blank">Download results</a>
+>
+
+        <a href={`http://34.152.59.173/fetchAsZip/${props.jobId}`} target="_blank" style={{textDecoration:"none"}}>Download results</a>
       </button>
     </div>
   );

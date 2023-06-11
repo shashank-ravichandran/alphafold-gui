@@ -1,8 +1,8 @@
 import { useState } from "react";
 import axios from "axios";
 import { Loader } from "./Loader";
-import { ResultPage } from "./ResultPage";
 import { ErrorPage } from "./ErrorPage";
+import { ResultPage } from "./ResultPage";
 
 export const MainPage = () => {
   const [displayAdvancedMenu, setDisplayAdvancedMenu] = useState(false);
@@ -224,7 +224,7 @@ export const MainPage = () => {
       ) : requestError ? (
         <ErrorPage />
       ) : (
-        <ResultPage resetAll={resetAll} jobId={jobId} />
+        <ResultPage resetAll={resetAll} jobId={jobId} sequence={formData.proteinSeq}/>
       )}
     </div>
   );

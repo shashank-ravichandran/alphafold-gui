@@ -17,8 +17,10 @@ router.get("/", (req, res) => {
 //Endpoint that returns the rank 1 AF2 model
 router.get("/fetchPDB/:id", jobSubmissionMethods.fetchPdb);
 
+router.get("/testPDB", jobSubmissionMethods.testPdb);
+
 //Endpoint that returns the result directory as a ZIP file
-router.get("/fetchAsZip/:id", jobSubmissionMethods.fetchAsZip);
+router.get("/fetch/:fileType/:id", jobSubmissionMethods.fetch);
 
 //Endpoint that checks status of AF2 for a submitted sequence
 router.get("/completionstatus/:id", jobSubmissionMethods.completionStatus);
@@ -77,6 +79,7 @@ router.post("/submitdata", async (req, res) => {
             `${config.file.inputFileDir}/${fileName}/status.txt`,
             "Error"
           );
+          res.status(500).send(error);
         } else {
           console.log(stdout);
           console.log(
@@ -95,6 +98,7 @@ router.post("/submitdata", async (req, res) => {
                   `${config.file.inputFileDir}/${fileName}/status.txt`,
                   "Error"
                 );
+                res.status(500).send(err);
               } else {
                 console.log(stdout, "AF2 complete");
               }
@@ -157,6 +161,7 @@ router.get("/generate", async (req, res) => {
           console.log(`Error in AF2 --> ${error}`, ` Stderr --> ${stderr}`);
           res.status(500).send(`Error in AF2 --> ${error}
              Stderr --> ${stderr}`);
+          res.status(500).send(err);
         } else {
           console.log(stdout);
           console.log(

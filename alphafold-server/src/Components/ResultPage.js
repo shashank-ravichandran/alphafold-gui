@@ -21,10 +21,25 @@ export const ResultPage = (props) => {
           center: { x: atom.x, y: atom.y, z: atom.z },
           radius: 1.5,
           color: "green",
-          clickable: true,
+          clickable: false,
         });
       }
-      
+
+      const clickCallback = (picked) => {
+        if (picked !== null) {
+          const atom = picked.atom;
+          viewer.addLabel(
+            `Residue: ${atom.resn}, Residue Number: ${atom.resi}`,
+            {
+              position: { x: atom.x, y: atom.y, z: atom.z },
+              backgroundColor: "black",
+            }
+          );
+          viewer.render();
+        }
+      };
+
+      viewer.setClickable({}, true, clickCallback);
       viewer.zoomTo();
       viewer.render();
     }
@@ -104,9 +119,11 @@ export const ResultPage = (props) => {
   };
 
   useEffect(() => {
-    axios.get(`http://34.152.59.173/fetchPDB/${props.jobId}`).then((response) => {
-      loadData(response.data);
-    });
+    axios
+      .get(`http://34.152.59.173/fetchPDB/${props.jobId}`)
+      .then((response) => {
+        loadData(response.data);
+      });
   });
 
   return (

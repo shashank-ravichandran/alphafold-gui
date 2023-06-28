@@ -1,17 +1,18 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import * as mol from "3dmol";
 import axios from "axios";
 
 export const ResultPage = (props) => {
   let viewer = null;
   const viewerRef = useRef(null);
+  const [label, setLabel] = useState(false);
 
   const loadData = (pdbData) => {
     if (viewerRef.current) {
       viewer = mol.createViewer(viewerRef.current);
       viewer.setBackgroundColor(0xffffff);
       viewer.addModel(pdbData, "pdb");
-      viewer.setStyle({}, { cartoon: {} });
+      viewer.setStyle({}, { sticks: {} });
 
       const models = viewer.getModel();
       const atoms = models.atoms;
@@ -65,32 +66,37 @@ export const ResultPage = (props) => {
     m.setColorByFunction({}, (atom) => {
       return "grey";
     });
-    viewer.setStyle({}, { cartoon: {} });
+    viewer.setStyle({}, { sticks: {} });
     viewer.removeAllLabels();
     viewer.render();
   };
 
-  const addLabels = () => {
-    let labels = [];
-    var atoms = viewer.getModel().selectedAtoms({
-      atom: "CA",
-    });
-
-    for (var a in atoms) {
-      var atom = atoms[a];
-      var l = viewer.addLabel(atom.resn + " " + atom.resi, {
-        inFront: true,
-        fontSize: 9,
-        position: {
-          x: atom.x,
-          y: atom.y,
-          z: atom.z,
-        },
+  const handleLabels = () => {
+    if (!label) {
+      let labels = [];
+      var atoms = viewer.getModel().selectedAtoms({
+        atom: "CA",
       });
-      atom.label = l;
-      labels.push(atom);
+
+      for (var a in atoms) {
+        var atom = atoms[a];
+        var l = viewer.addLabel(atom.resn + " " + atom.resi, {
+          inFront: true,
+          fontSize: 9,
+          position: {
+            x: atom.x,
+            y: atom.y,
+            z: atom.z,
+          },
+        });
+        atom.label = l;
+        labels.push(atom);
+      }
+    } else {
+      viewer.removeAllLabels();
     }
     viewer.render();
+    setLabel(!label);
   };
 
   const setColorBySecondaryStructure = () => {
@@ -131,7 +137,7 @@ export const ResultPage = (props) => {
       <br />
       <div
         style={{
-          width: "75%",
+          width: "75vw",
           height: "15vh",
           margin: "auto",
           display: "flex",
@@ -146,20 +152,14 @@ export const ResultPage = (props) => {
           <p>{props.sequence}</p>
         </div>
 
-        <div style={{ textAlign: "center", width: "25%", lineHeight: "3.2" }}>
-          <button
-            className={"customBtn pdb-viewer-btn"}
-            aria-label="Download results"
-          >
-            <a
-              href={`http://34.152.59.173/fetch/zip/${props.jobId}`}
-              target="_blank"
-              rel="noreferrer"
-              style={{ textDecoration: "none", color: "#444444" }}
-            >
-              Download results
-            </a>
-          </button>
+        <div
+          style={{
+            textAlign: "center",
+            width: "25%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
           <button
             className={"customBtn pdb-viewer-btn"}
             aria-label="Submit another sequence"
@@ -196,16 +196,17 @@ export const ResultPage = (props) => {
         style={{
           display: "flex",
           justifyContent: "center",
-          paddingBottom: "20px",
+          margin: "auto",
+          width: "75vw",
         }}
       >
         <div
           className={"pdb-viewer"}
           ref={viewerRef}
-          style={{ width: "50%", height: "70vh" }}
+          style={{ width: "60%", height: "70vh", border: "3px solid black" }}
         />
         <div
-          style={{ border: "3px solid black", width: "30%", height: "70vh" }}
+          style={{ border: "3px solid black", width: "40%", height: "70vh" }}
         >
           <div
             style={{
@@ -214,61 +215,64 @@ export const ResultPage = (props) => {
               paddingBottom: "20px",
             }}
           >
-            <h2>Representation</h2>
-            <div className="pdb-viewer-btn-container">
-              <button
-                className={"customBtn pdb-viewer-btn"}
-                onClick={() => setLines()}
-              >
-                Lines
-              </button>
-
-              <button
-                className={"customBtn pdb-viewer-btn"}
-                onClick={() => setSticks()}
-              >
-                Sticks
-              </button>
-
-              <button
-                className={"customBtn pdb-viewer-btn"}
-                onClick={() => setCartoon()}
-              >
-                Cartoon
-              </button>
+            <h2>Structure visualisation style</h2>
+            <div style={{ display: "flex", justifyContent: "space-evenly" }}>
+              <div>
+                <h3 style={{ display: "inline" }}>Representation: </h3>
+                <select
+                  onChange={(e) => {
+                    switch (e.target.value) {
+                      case "Sticks":
+                        setSticks();
+                        break;
+                      case "Lines":
+                        setLines();
+                        break;
+                      case "Cartoon":
+                        setCartoon();
+                        break;
+                      default:
+                        break;
+                    }
+                  }}
+                >
+                  <option value="Sticks">Sticks</option>
+                  <option value="Lines">Lines</option>
+                  <option value="Cartoon">Cartoon</option>
+                </select>
+              </div>
+              <div>
+                <h3 style={{ display: "inline" }}>Color: </h3>
+                <select
+                  onChange={(e) => {
+                    switch (e.target.value) {
+                      case "SS":
+                        setColorBySecondaryStructure();
+                        break;
+                      case "Charge":
+                        setColorByCharge();
+                        break;
+                      case "Hydrophobicity":
+                        break;
+                      default:
+                        break;
+                    }
+                  }}
+                >
+                  <option value="SS">By Secondary Structure</option>
+                  <option value="Charge">By Charge</option>
+                  <option value="Hydrophobicity">By Hydrophobicity</option>
+                </select>
+              </div>
             </div>
 
-            <br />
-            <h2>Color</h2>
-            <div className="pdb-viewer-btn-container">
-              <button
-                className={"customBtn pdb-viewer-btn"}
-                onClick={() => setColorBySecondaryStructure()}
-              >
-                By SS
-              </button>
-
-              <button
-                className={"customBtn pdb-viewer-btn"}
-                onClick={() => setColorByCharge()}
-              >
-                By Charge
-              </button>
-
-              <button className={"customBtn pdb-viewer-btn"}>
-                By GRAVY score
-              </button>
-              <br />
-            </div>
-
-            <br />
             <br />
             <div>
               <button
                 className={"customBtn pdb-viewer-btn"}
-                onClick={() => addLabels()}
+                onClick={() => handleLabels()}
               >
-                Label residues
+                {label ? "Label residues" : "Remove labels"}
               </button>
 
               <button
@@ -282,10 +286,11 @@ export const ResultPage = (props) => {
 
             <br />
             <br />
+            <br />
             <div className="pdb-viewer-btn-container">
               <button
                 className={"customBtn pdb-viewer-btn"}
-                aria-label="Download input csv"
+                aria-label="Download input .csv"
               >
                 <a
                   href={`http://34.152.59.173/fetch/csv/${props.jobId}`}
@@ -293,13 +298,13 @@ export const ResultPage = (props) => {
                   rel="noreferrer"
                   style={{ textDecoration: "none", color: "#444444" }}
                 >
-                  Download csv
+                  Download input .csv
                 </a>
               </button>
 
               <button
                 className={"customBtn pdb-viewer-btn"}
-                aria-label="Download PDB"
+                aria-label="Download output .PDB"
               >
                 <a
                   href={`http://34.152.59.173/fetch/pdb/${props.jobId}`}
@@ -307,14 +312,33 @@ export const ResultPage = (props) => {
                   rel="noreferrer"
                   style={{ textDecoration: "none", color: "#444444" }}
                 >
-                  Download pdb
+                  Download output .PDB
+                </a>
+              </button>
+            </div>
+
+            <br />
+            <div
+              style={{ borderBottom: "3px solid black", paddingBottom: "20px" }}
+            >
+              <button
+                className={"customBtn pdb-viewer-btn"}
+                aria-label="Download results"
+              >
+                <a
+                  href={`http://34.152.59.173/fetch/zip/${props.jobId}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  style={{ textDecoration: "none", color: "#444444" }}
+                >
+                  Download results as .zip
                 </a>
               </button>
             </div>
           </div>
 
           <div style={{ textAlign: "center" }}>
-            <h3>Legend</h3>
+            <h2>Legend</h2>
           </div>
         </div>
       </div>

@@ -68,6 +68,26 @@ router.post("/submitdata", async (req, res) => {
     }
 
     exec(
+      `python3 get_properties.py ${seqData} ${config.file.inputFileDir}/${fileName}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(
+            `Error while generating properties --> ${error}`,
+            ` Stderr --> ${stderr}`
+          );
+          
+          fs.writeFile(
+            `${config.file.inputFileDir}/${fileName}/status.txt`,
+            "Error"
+          );
+          res.status(500).send(error);
+        } else {
+          console.log("Generated properties for the given sequence");
+        }
+      }
+    );
+    
+    exec(
       `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
         if (error) {
@@ -119,6 +139,7 @@ router.post("/submitdata", async (req, res) => {
 router.get("/generate", async (req, res) => {
   try {
     let seqData = req.query.sequence;
+    
     let options = {
       amber: req.query.AMBER,
       template: req.query.Templatemode,
@@ -153,6 +174,26 @@ router.get("/generate", async (req, res) => {
     } catch (err) {
       res.status(500).send(err);
     }
+
+    exec(
+      `python3 get_properties.py ${seqData} ${config.file.inputFileDir}/${fileName}`,
+      (error, stdout, stderr) => {
+        if (error) {
+          console.log(
+            `Error while generating properties --> ${error}`,
+            ` Stderr --> ${stderr}`
+          );
+          
+          fs.writeFile(
+            `${config.file.inputFileDir}/${fileName}/status.txt`,
+            "Error"
+          );
+          res.status(500).send(error);
+        } else {
+          console.log("Generated properties for the given sequence");
+        }
+      }
+    );
 
     exec(
       `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,

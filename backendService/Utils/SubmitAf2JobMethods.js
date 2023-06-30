@@ -80,6 +80,19 @@ const jobSubmissionMethods = {
         res.download(csvFile);
         break;
 
+      case "properties":
+        try {
+          fsSync.readFile(
+            `${config.file.inputFileDir}/${req.params.id}/properties.txt`,
+            (_, data) => {
+              res.status(200).send(data);
+            }
+          );
+        } catch (err) {
+          res.status(500).send(err);
+        }
+        break; 
+      
       default:
         break;
     }

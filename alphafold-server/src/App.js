@@ -13,7 +13,7 @@ function App() {
       <Routes>
         <Route path="/alphafold-server" element={<MainPage />} />
         <Route path="/" element={<Navigate to={"/alphafold-server"} />} />
-        <Route path="/test" element={<ResultPage />} />
+        <Route path="/test" element={<ResultPage sequence="QWERTY"/>} />
       </Routes>
     </BrowserRouter>
   );

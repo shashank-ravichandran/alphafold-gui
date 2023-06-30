@@ -6,6 +6,12 @@ export const ResultPage = (props) => {
   let viewer = null;
   const viewerRef = useRef(null);
   const [label, setLabel] = useState(false);
+  const [properties, setProperties] = useState({
+    molWeight: null,
+    charge: null,
+    pI: null,
+    GRAVY: null,
+  });
 
   const loadData = (pdbData) => {
     if (viewerRef.current) {
@@ -126,6 +132,21 @@ export const ResultPage = (props) => {
 
   useEffect(() => {
     axios
+      .get(`http://34.152.59.173/fetch/properties/${props.jobId}`)
+      .then((response) => {
+        if (response.status !== 500) {
+          let response = response.data.split("\n");
+          let protProps = {
+            molWeight: response[0].split(":")[1],
+            charge: response[1].split(":")[1],
+            pI: response[2].split(":")[1],
+            GRAVY: response[3].split(":")[1],
+          };
+          setProperties(protProps);
+        }
+      });
+
+    axios
       .get(`http://34.152.59.173/fetchPDB/${props.jobId}`)
       .then((response) => {
         loadData(response.data);
@@ -149,7 +170,7 @@ export const ResultPage = (props) => {
           <h3 style={{ textAlign: "center", marginTop: "10px" }}>
             Input Sequence
           </h3>
-          <p>{props.sequence}</p>
+          <p style={{ fontSize: "15px" }}>{props.sequence}</p>
         </div>
 
         <div
@@ -181,12 +202,14 @@ export const ResultPage = (props) => {
             <th>Molecular Wt.</th>
             <th>Charge</th>
             <th>pI</th>
+            <th>GRAVY score</th>
           </tr>
           <tr>
-            <td>---</td>
-            <td>---</td>
-            <td>---</td>
-            <td>---</td>
+            <td>{props.sequence.length}</td>
+            <td>{properties.molWeight ? properties.molWeight : "---" }</td>
+            <td>{properties.charge ? properties.charge : "---" }</td>
+            <td>{properties.pI ? properties.pI : "---" }</td>
+            <td>{properties.GRAVY ? properties.GRAVY : "---" }</td>
           </tr>
         </table>
       </div>
@@ -198,6 +221,7 @@ export const ResultPage = (props) => {
           justifyContent: "center",
           margin: "auto",
           width: "75vw",
+          marginBottom: "20px",
         }}
       >
         <div
@@ -206,11 +230,10 @@ export const ResultPage = (props) => {
           style={{ width: "60%", height: "70vh", border: "3px solid black" }}
         />
         <div
-          style={{ border: "3px solid black", width: "40%", height: "70vh" }}
+          style={{ border: "3px solid black", width: "50%", height: "70vh" }}
         >
           <div
             style={{
-              borderBottom: "3px solid black",
               textAlign: "center",
               paddingBottom: "20px",
             }}
@@ -242,7 +265,7 @@ export const ResultPage = (props) => {
                 </select>
               </div>
               <div>
-                <h3 style={{ display: "inline" }}>Color: </h3>
+                <h3 style={{ display: "inline" }}>Color by: </h3>
                 <select
                   onChange={(e) => {
                     switch (e.target.value) {
@@ -259,9 +282,9 @@ export const ResultPage = (props) => {
                     }
                   }}
                 >
-                  <option value="SS">By Secondary Structure</option>
-                  <option value="Charge">By Charge</option>
-                  <option value="Hydrophobicity">By Hydrophobicity</option>
+                  <option value="SS">Secondary Structure</option>
+                  <option value="Charge">Charge</option>
+                  <option value="Hydrophobicity">Hydrophobicity</option>
                 </select>
               </div>
             </div>

@@ -107,7 +107,7 @@ export const MainPage = () => {
                 }));
 
                 if (
-                  /.*[^ARNDBCEQZGHILKMFPSTWYV].*/.test(
+                  /.*[^ARNDCEQGHILKMFPSTWYV].*/.test(
                     e.target.value.toUpperCase()
                   )
                 )

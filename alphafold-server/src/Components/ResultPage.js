@@ -5,7 +5,10 @@ import axios from "axios";
 export const ResultPage = (props) => {
   let viewer = null;
   const viewerRef = useRef(null);
-  const [label, setLabel] = useState(false);
+  const [structData, setStructData] = useState(null);
+  const [colorBy, setColorBy] = useState("");
+  const [repr, setRepr] = useState("Sticks");
+  const [label, setLabel] = useState(true);
   const [properties, setProperties] = useState({
     molWeight: null,
     charge: null,
@@ -18,7 +21,7 @@ export const ResultPage = (props) => {
       viewer = mol.createViewer(viewerRef.current);
       viewer.setBackgroundColor(0xffffff);
       viewer.addModel(pdbData, "pdb");
-      viewer.setStyle({}, { sticks: {} });
+      viewer.setStyle({}, { stick: {} });
 
       const models = viewer.getModel();
       const atoms = models.atoms;
@@ -46,39 +49,48 @@ export const ResultPage = (props) => {
         }
       };
 
+      switch (repr) {
+        case "Sticks":
+          viewer.setStyle({}, { stick: {} });
+          break;
+        case "Lines":
+          viewer.setStyle({}, { line: {} });
+          break;
+        case "Cartoon":
+          viewer.setStyle({}, { cartoon: {} });
+          break;
+        default:
+          break;
+      }
+
+      switch (colorBy) {
+        case "SS":
+          setColorBySecondaryStructure();
+          break;
+        case "Charge":
+          setColorByCharge();
+          break;
+        case "Hydrophobicity":
+          break;
+        default:
+          break;
+      }
+
+      handleLabels();
       viewer.setClickable({}, true, clickCallback);
       viewer.zoomTo();
       viewer.render();
     }
   };
 
-  const setCartoon = () => {
-    viewer.setStyle({}, { cartoon: {} });
-    viewer.render();
-  };
-
-  const setLines = () => {
-    viewer.setStyle({}, { line: {} });
-    viewer.render();
-  };
-
-  const setSticks = () => {
-    viewer.setStyle({}, { stick: {} });
-    viewer.render();
-  };
-
   const resetRepr = () => {
-    var m = viewer.getModel();
-    m.setColorByFunction({}, (atom) => {
-      return "grey";
-    });
-    viewer.setStyle({}, { sticks: {} });
-    viewer.removeAllLabels();
-    viewer.render();
+    setRepr("Sticks");
+    setColorBy("");
+    setLabel(true);
   };
 
   const handleLabels = () => {
-    if (!label) {
+    if (label) {
       let labels = [];
       var atoms = viewer.getModel().selectedAtoms({
         atom: "CA",
@@ -101,8 +113,6 @@ export const ResultPage = (props) => {
     } else {
       viewer.removeAllLabels();
     }
-    viewer.render();
-    setLabel(!label);
   };
 
   const setColorBySecondaryStructure = () => {
@@ -112,7 +122,6 @@ export const ResultPage = (props) => {
       else if (atom.ss === "s") return "darkorange";
       else return "grey";
     });
-    viewer.render();
   };
 
   const setColorByCharge = () => {
@@ -127,20 +136,21 @@ export const ResultPage = (props) => {
         return "blue";
       else return "grey";
     });
-    viewer.render();
   };
+
+  useEffect(() => loadData(structData), [repr, colorBy, label]);
 
   useEffect(() => {
     axios
       .get(`http://34.152.59.173/fetch/properties/${props.jobId}`)
       .then((response) => {
         if (response.status !== 500) {
-          let response = response.data.split("\n");
+          let res = response.data.split("\n");
           let protProps = {
-            molWeight: response[0].split(":")[1],
-            charge: response[1].split(":")[1],
-            pI: response[2].split(":")[1],
-            GRAVY: response[3].split(":")[1],
+            molWeight: parseFloat(res[0].split(":")[1]).toFixed(2),
+            charge: parseFloat(res[1].split(":")[1]).toFixed(2),
+            pI: parseFloat(res[2].split(":")[1]).toFixed(2),
+            GRAVY: parseFloat(res[3].split(":")[1]).toFixed(2),
           };
           setProperties(protProps);
         }
@@ -149,9 +159,10 @@ export const ResultPage = (props) => {
     axios
       .get(`http://34.152.59.173/fetchPDB/${props.jobId}`)
       .then((response) => {
+        setStructData(response.data);
         loadData(response.data);
       });
-  });
+  }, []);
 
   return (
     <>
@@ -197,20 +208,24 @@ export const ResultPage = (props) => {
             textAlign: "center",
           }}
         >
-          <tr>
-            <th>Residue count</th>
-            <th>Molecular Wt.</th>
-            <th>Charge</th>
-            <th>pI</th>
-            <th>GRAVY score</th>
-          </tr>
-          <tr>
-            <td>{props.sequence.length}</td>
-            <td>{properties.molWeight ? properties.molWeight : "---" }</td>
-            <td>{properties.charge ? properties.charge : "---" }</td>
-            <td>{properties.pI ? properties.pI : "---" }</td>
-            <td>{properties.GRAVY ? properties.GRAVY : "---" }</td>
-          </tr>
+          <thead>
+            <tr>
+              <th>Residue count</th>
+              <th>Molecular Wt.</th>
+              <th>Charge</th>
+              <th>pI</th>
+              <th>GRAVY score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>{props.sequence.length}</td>
+              <td>{properties.molWeight ? properties.molWeight : "---"}</td>
+              <td>{properties.charge ? properties.charge : "---"}</td>
+              <td>{properties.pI ? properties.pI : "---"}</td>
+              <td>{properties.GRAVY ? properties.GRAVY : "---"}</td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
@@ -244,21 +259,10 @@ export const ResultPage = (props) => {
                 <h3 style={{ display: "inline" }}>Representation: </h3>
                 <select
                   onChange={(e) => {
-                    switch (e.target.value) {
-                      case "Sticks":
-                        setSticks();
-                        break;
-                      case "Lines":
-                        setLines();
-                        break;
-                      case "Cartoon":
-                        setCartoon();
-                        break;
-                      default:
-                        break;
-                    }
+                    setRepr(e.target.value);
                   }}
                 >
+                  <option value="">Choose</option>
                   <option value="Sticks">Sticks</option>
                   <option value="Lines">Lines</option>
                   <option value="Cartoon">Cartoon</option>
@@ -268,20 +272,10 @@ export const ResultPage = (props) => {
                 <h3 style={{ display: "inline" }}>Color by: </h3>
                 <select
                   onChange={(e) => {
-                    switch (e.target.value) {
-                      case "SS":
-                        setColorBySecondaryStructure();
-                        break;
-                      case "Charge":
-                        setColorByCharge();
-                        break;
-                      case "Hydrophobicity":
-                        break;
-                      default:
-                        break;
-                    }
+                    setColorBy(e.target.value);
                   }}
                 >
+                  <option value="">Choose</option>
                   <option value="SS">Secondary Structure</option>
                   <option value="Charge">Charge</option>
                   <option value="Hydrophobicity">Hydrophobicity</option>
@@ -293,15 +287,17 @@ export const ResultPage = (props) => {
             <div>
               <button
                 className={"customBtn pdb-viewer-btn"}
-                onClick={() => handleLabels()}
+                onClick={() => setLabel(!label)}
               >
-                {label ? "Label residues" : "Remove labels"}
+                {label ? "Remove labels" : "Add labels"}
               </button>
 
               <button
                 className={"customBtn pdb-viewer-btn"}
                 style={{ marginLeft: "30px" }}
-                onClick={() => resetRepr()}
+                onClick={() => {
+                  resetRepr();
+                }}
               >
                 Reset
               </button>

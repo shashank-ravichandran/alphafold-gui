@@ -1,12 +1,14 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as mol from "3dmol";
 import axios from "axios";
+import {webpageConstants} from "../Utils/Constants";
 
 export const ResultPage = (props) => {
+  let legendText = webpageConstants.legendText;
   let viewer = null;
   const viewerRef = useRef(null);
   const [structData, setStructData] = useState(null);
-  const [colorBy, setColorBy] = useState("");
+  const [colorBy, setColorBy] = useState("default");
   const [repr, setRepr] = useState("Sticks");
   const [label, setLabel] = useState(true);
   const [properties, setProperties] = useState({
@@ -70,8 +72,6 @@ export const ResultPage = (props) => {
         case "Charge":
           setColorByCharge();
           break;
-        case "Hydrophobicity":
-          break;
         default:
           break;
       }
@@ -85,7 +85,7 @@ export const ResultPage = (props) => {
 
   const resetRepr = () => {
     setRepr("Sticks");
-    setColorBy("");
+    setColorBy("default");
     setLabel(true);
   };
 
@@ -275,10 +275,9 @@ export const ResultPage = (props) => {
                     setColorBy(e.target.value);
                   }}
                 >
-                  <option value="">Choose</option>
+                  <option value="default">Choose</option>
                   <option value="SS">Secondary Structure</option>
                   <option value="Charge">Charge</option>
-                  <option value="Hydrophobicity">Hydrophobicity</option>
                 </select>
               </div>
             </div>
@@ -358,6 +357,8 @@ export const ResultPage = (props) => {
 
           <div style={{ textAlign: "center" }}>
             <h2>Legend</h2>
+            <p>{legendText.representation[repr]}</p>
+            <p>{legendText.colorBy[colorBy]}</p>
           </div>
         </div>
       </div>

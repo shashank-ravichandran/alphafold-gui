@@ -1,6 +1,8 @@
 {
   "dependencies": {
     "3dmol": "^2.0.3",
-    "glob": "^10.2.2"
+    "chart.js": "^4.4.0",
+    "glob": "^10.2.2",
+    "react-chartjs-2": "^5.2.0"
   }
 }

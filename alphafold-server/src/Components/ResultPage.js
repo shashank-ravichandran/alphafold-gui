@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import * as mol from "3dmol";
 import axios from "axios";
-import {webpageConstants} from "../Utils/Constants";
+import { webpageConstants } from "../Utils/Constants";
+import { LineChart } from "./LineChart";
 
 export const ResultPage = (props) => {
   let legendText = webpageConstants.legendText;
@@ -262,7 +263,7 @@ export const ResultPage = (props) => {
                     setRepr(e.target.value);
                   }}
                 >
-                  <option value="">Choose</option>
+                  <option value="default">Choose</option>
                   <option value="Sticks">Sticks</option>
                   <option value="Lines">Lines</option>
                   <option value="Cartoon">Cartoon</option>
@@ -355,13 +356,19 @@ export const ResultPage = (props) => {
             </div>
           </div>
 
-          <div style={{ textAlign: "center" }}>
+          <div style={{ textAlign: "center",padding:"0px 20px" }}>
             <h2>Legend</h2>
-            <p>{legendText.representation[repr]}</p>
-            <p>{legendText.colorBy[colorBy]}</p>
+            <h4>{legendText.representation[repr]}</h4>
+            <h4>{legendText.colorBy[colorBy]}</h4>
           </div>
         </div>
       </div>
+      <br />
+      <div style={{margin:"auto", width: "40vw", textAlign: "center"}}>
+        <h2>Peptide Companion</h2>
+        <LineChart sequence={props.sequence}/>
+      </div>
+      <br />
     </>
   );
 };

@@ -114,6 +114,7 @@ textarea {
   margin-bottom: 1rem;
   transition: background-color 0.3s;
   border-radius: 5px;
+  font-size: 13px;
 }
 
 .disabledBtn {
@@ -241,8 +242,6 @@ h3 {
   position: relative;
   max-height: 750px;
   max-width: 650px;
-  width: 50%;
-  height: 35vw;
 }
 
 .pdb-viewer-btn {
@@ -250,7 +249,8 @@ h3 {
   margin: auto;
 }
 
-.pdb-viewer-btn-container {
-  display: flex;
-  justify-content: space-around;
+.paper-background {
+  background-color: #fff;
+  box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.3);
+  border-radius: 10px;
 }

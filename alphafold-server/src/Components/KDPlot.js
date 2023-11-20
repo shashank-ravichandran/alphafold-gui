@@ -1,5 +1,5 @@
 import React from "react";
-import { Line, Scatter } from "react-chartjs-2";
+import { Scatter } from "react-chartjs-2";
 import { LinearScale } from "chart.js";
 import { KdPlotValueCalc } from "../Utils/peptideDataExtractFuncs";
 import Chart from "chart.js/auto";

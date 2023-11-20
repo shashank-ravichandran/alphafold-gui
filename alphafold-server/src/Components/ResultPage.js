@@ -106,18 +106,8 @@ export const ResultPage = (props) => {
     setLabel(true);
   };
 
-  const generateGradientColor = (value) => {
-    const color1 = [255,0,0];
-    const color2 = [0,0,255];
-
-    const normalizedValue = (value + 5) / 5;
-    const colorArray = [
-      Math.round(color1[0] + color2[0] * normalizedValue),
-      Math.round(color1[1] + color2[1] * normalizedValue),
-      Math.round(color1[2] + color2[2] * normalizedValue),
-    ];
-
-    return `rgb(${colorArray[0]},${colorArray[1]},${colorArray[2]})`;
+  const generateKdColor = (value) => {
+    return value > 0 ? "blue" : "grey";
   };
 
   const handleLabels = () => {
@@ -191,7 +181,7 @@ export const ResultPage = (props) => {
     m.setColorByFunction({}, (atom) => {
       let index = atom.resi;
       if (index > props.sequence.length - 4) return "grey";
-      else return generateGradientColor(kdData[index - 1]);
+      else return generateKdColor(kdData[index - 1]);
     });
   };
 
@@ -199,26 +189,26 @@ export const ResultPage = (props) => {
 
   useEffect(() => {
     axios
-    .get(`http://34.152.59.173/fetch/properties/${props.jobId}`)
-    .then((response) => {
-    if (response.status !== 500) {
-    let res = response.data.split("\n");
-    let protProps = {
-    molWeight: parseFloat(res[0].split(":")[1]).toFixed(2),
-    charge: parseFloat(res[1].split(":")[1]).toFixed(2),
-    pI: parseFloat(res[2].split(":")[1]).toFixed(2),
-    GRAVY: parseFloat(res[3].split(":")[1]).toFixed(2),
-    };
-    setProperties(protProps);
-    }
+      .get(`http://34.152.59.173/fetch/properties/${props.jobId}`)
+      .then((response) => {
+        if (response.status !== 500) {
+          let res = response.data.split("\n");
+          let protProps = {
+            molWeight: parseFloat(res[0].split(":")[1]).toFixed(2),
+            charge: parseFloat(res[1].split(":")[1]).toFixed(2),
+            pI: parseFloat(res[2].split(":")[1]).toFixed(2),
+            GRAVY: parseFloat(res[3].split(":")[1]).toFixed(2),
+          };
+          setProperties(protProps);
+        }
       });
 
     axios
       .get(`http://34.152.59.173/fetchPDB/${props.jobId}`)
       .then((response) => {
-            setStructData(response.data);
-      loadData(response.data);
-    });
+        setStructData(response.data);
+        loadData(response.data);
+      });
 
     let pc_data = difficultyCouplingCalc(props.sequence);
     setPcData(pc_data[0]);
@@ -439,6 +429,20 @@ export const ResultPage = (props) => {
           <div className="col-md-6 text-center">
             <h3>Peptide Companion</h3>
             <LineChart sequence={props.sequence} />
+            <div className="mt-3 mb-1 text-start" style={{ color: "red" }}>
+              * Due to a window size of 5, the last four residues tend to have
+              the exact same values
+            </div>
+          </div>
+          <div className="col-md-6 text-center">
+            <h3>2D representation of the peptide</h3>
+            <div style={{ height: "85%", border: "3px solid black" }}>
+              <img
+                src="http://34.152.59.173/fetch/2dImage/${props.jobId}"
+                alt="peptide image"
+                style={{ width: "inherit", height: "inherit" }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -450,6 +454,10 @@ export const ResultPage = (props) => {
           <div className="col-md-10 text-center">
             <h3>Kyte-Doolittle-Hydropathy Plot</h3>
             <KDPlot sequence={props.sequence} />
+            <div className="mt-3 mb-1 text-start" style={{ color: "red" }}>
+              * Due to a window size of 5, the last four residues tend to have
+              the exact same values
+            </div>
           </div>
         </div>
       </div>

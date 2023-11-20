@@ -142,6 +142,10 @@ export const KdPlotValueCalc = (sequence) => {
 
       data.push({x:n+1, y:valueAtIdx/5});
     }
+
+    else {
+      data.push({x:n+1, y:data[data.length-1].y});
+    }
   }
 
   return data;

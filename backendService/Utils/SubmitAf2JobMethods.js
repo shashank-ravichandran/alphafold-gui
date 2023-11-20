@@ -22,12 +22,9 @@ const jobSubmissionMethods = {
 
   testPdb: (req, res) => {
     try {
-      fsSync.readFile(
-        `../inputFiles/1jug.pdb`,
-        (_, data) => {
-          res.status(200).send(data);
-        }
-      );
+      fsSync.readFile(`../inputFiles/1jug.pdb`, (_, data) => {
+        res.status(200).send(data);
+      });
     } catch (err) {
       console.log("Error in TestPDB", err);
       res.status(500).send(err);
@@ -91,8 +88,20 @@ const jobSubmissionMethods = {
         } catch (err) {
           res.status(500).send(err);
         }
-        break; 
-      
+        break;
+
+      case "2dImage":
+        try {
+          fsSync.readFile(
+            `${config.file.inputFileDir}/${req.params.id}/peptide.png`,
+            (_, data) => {
+              res.status(200).send(data);
+            }
+          );
+        } catch (err) {
+          res.status(500).send(err);
+        }
+        break;
       default:
         break;
     }

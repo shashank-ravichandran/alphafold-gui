@@ -88,7 +88,7 @@ router.post("/submitdata", async (req, res) => {
     );
     
     exec(
-      `cp runAlphafold.sh ${config.file.inputFileDir}/${fileName}/`,
+      `cp *.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
         if (error) {
           console.log(
@@ -103,11 +103,11 @@ router.post("/submitdata", async (req, res) => {
         } else {
           console.log(stdout);
           console.log(
-            "Copied script file running AF2 now",
-            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`
+            "Copied script files running AF2 now",
+            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions} -s ${seqData}`
           );
           exec(
-            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions}`,
+            `${config.file.inputFileDir}/${fileName}/runAlphafold.sh ${alphafoldOptions} -s ${seqData}`,
             (error, stdout, stderr) => {
               if (error) {
                 console.log(

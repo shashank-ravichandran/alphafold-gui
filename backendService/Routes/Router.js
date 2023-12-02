@@ -239,7 +239,7 @@ router.get("/generate", async (req, res) => {
                     fsSync.readFile(
                       `${config.file.inputFileDir}/${req.params.id}/properties.txt`,
                       (_, data) => {
-                        result.properties(data);
+                        result.properties = data;
                       }
                     );
                   } catch (err) {

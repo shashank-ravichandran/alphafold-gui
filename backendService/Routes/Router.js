@@ -245,6 +245,7 @@ router.get("/generate", async (req, res) => {
                   } catch (err) {
                     res.status(500).send(err);
                   }
+                  res.status(200).send(result);
                 } catch (err) {
                   console.log("Error in FetchPDB", err);
                   res.status(500).send(err);
@@ -252,7 +253,6 @@ router.get("/generate", async (req, res) => {
               }
             }
           );
-          res.status(200).send(result);
         }
       }
     );

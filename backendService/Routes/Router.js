@@ -75,7 +75,7 @@ router.post("/submitdata", async (req, res) => {
             `Error while generating properties --> ${error}`,
             ` Stderr --> ${stderr}`
           );
-          
+
           fs.writeFile(
             `${config.file.inputFileDir}/${fileName}/status.txt`,
             "Error"
@@ -86,7 +86,7 @@ router.post("/submitdata", async (req, res) => {
         }
       }
     );
-    
+
     exec(
       `cp *.sh ${config.file.inputFileDir}/${fileName}/`,
       (error, stdout, stderr) => {
@@ -137,9 +137,14 @@ router.post("/submitdata", async (req, res) => {
            Templatemode (use template mode [yes/no]), Recycle (Number recycles [1,2,3])`;
 //Response: Rank 1 AF2 model file contents as text
 router.get("/generate", async (req, res) => {
+  let result = {
+    structure: "",
+    properties: "",
+  };
+
   try {
     let seqData = req.query.sequence;
-    
+
     let options = {
       amber: req.query.AMBER,
       template: req.query.Templatemode,
@@ -183,7 +188,7 @@ router.get("/generate", async (req, res) => {
             `Error while generating properties --> ${error}`,
             ` Stderr --> ${stderr}`
           );
-          
+
           fs.writeFile(
             `${config.file.inputFileDir}/${fileName}/status.txt`,
             "Error"
@@ -226,9 +231,20 @@ router.get("/generate", async (req, res) => {
                   fsSync.readFile(
                     `${config.file.inputFileDir}/${fileName}/final_structure.pdb`,
                     (_, data) => {
-                      res.status(200).send(data);
+                      result.structure = data;
                     }
                   );
+
+                  try {
+                    fsSync.readFile(
+                      `${config.file.inputFileDir}/${req.params.id}/properties.txt`,
+                      (_, data) => {
+                        result.properties(data);
+                      }
+                    );
+                  } catch (err) {
+                    res.status(500).send(err);
+                  }
                 } catch (err) {
                   console.log("Error in FetchPDB", err);
                   res.status(500).send(err);
@@ -236,6 +252,7 @@ router.get("/generate", async (req, res) => {
               }
             }
           );
+          res.status(200).send(result);
         }
       }
     );

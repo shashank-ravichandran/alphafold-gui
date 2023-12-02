@@ -436,11 +436,11 @@ export const ResultPage = (props) => {
           </div>
           <div className="col-md-6 text-center">
             <h3>2D representation of the peptide</h3>
-            <div style={{ height: "85%", border: "3px solid black" }}>
+            <div className="col-12" style={{ height: "85%", border: "3px solid black" }}>
               <img
                 src={`http://34.152.59.173/fetch/2dImage/${props.jobId}`}
                 alt="2d peptide representation"
-                style={{ width: "inherit", height: "inherit" }}
+                style={{ width: "100%", height: "100%" }}
               />
             </div>
           </div>

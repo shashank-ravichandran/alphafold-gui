@@ -237,7 +237,7 @@ router.get("/generate", async (req, res) => {
 
                   try {
                     fsSync.readFile(
-                      `${config.file.inputFileDir}/${req.params.id}/properties.txt`,
+                      `${config.file.inputFileDir}/${fileName}/properties.txt`,
                       (_, data) => {
                         result.properties = data;
                       }

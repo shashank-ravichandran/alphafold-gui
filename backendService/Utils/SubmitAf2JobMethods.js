@@ -1,5 +1,6 @@
 const fsSync = require("fs");
 const fs = require("fs").promises;
+const path = require("path");
 
 const jobSubmissionMethods = {
   fetchPdb: (req, res) => {
@@ -22,9 +23,7 @@ const jobSubmissionMethods = {
 
   testPdb: (req, res) => {
     try {
-      fsSync.readFile(`../inputFiles/1jug.pdb`, (_, data) => {
-        res.status(200).send(data);
-      });
+      res.download(path.join(__dirname, "../inputFiles/1jug.pdb"), "testPDB.pdb");
     } catch (err) {
       console.log("Error in TestPDB", err);
       res.status(500).send(err);

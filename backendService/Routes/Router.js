@@ -5,6 +5,7 @@ const fsSync = require("fs");
 const fs = require("fs").promises;
 const bodyParser = require("body-parser");
 const { jobSubmissionMethods } = require("../Utils/SubmitAf2JobMethods");
+const path = require("path");
 
 //Function to save the submitted sequence in the AF2 input format
 const saveCsvFile = jobSubmissionMethods.saveCsvFile;
@@ -137,10 +138,7 @@ router.post("/submitdata", async (req, res) => {
            Templatemode (use template mode [yes/no]), Recycle (Number recycles [1,2,3])`;
 //Response: Rank 1 AF2 model file contents as text
 router.get("/generate", async (req, res) => {
-  let result = {
-    structure: "",
-    properties: "",
-  };
+  let result = {};
 
   try {
     let seqData = req.query.sequence;
@@ -228,24 +226,7 @@ router.get("/generate", async (req, res) => {
               } else {
                 console.log(stdout);
                 try {
-                  fsSync.readFile(
-                    `${config.file.inputFileDir}/${fileName}/final_structure.pdb`,
-                    (_, data) => {
-                      result.structure = data;
-                    }
-                  );
-
-                  try {
-                    fsSync.readFile(
-                      `${config.file.inputFileDir}/${fileName}/properties.txt`,
-                      (_, data) => {
-                        result.properties = data;
-                      }
-                    );
-                  } catch (err) {
-                    res.status(500).send(err);
-                  }
-                  res.status(200).send(result);
+                  res.download(path.join(__dirname,`../${config.file.inputFileDir}/${fileName}/final_structure.pdb`), "generated_structure.pdb");
                 } catch (err) {
                   console.log("Error in FetchPDB", err);
                   res.status(500).send(err);
